@@ -105,6 +105,8 @@ foreach ($p in $projects) {
         Pop-Location
         
         # Optional: remove local mirror to save space
-        Remove-Item -Recurse -Force $work
+        # Remove-Item -Recurse -Force $work
     }
 }
+
+Write-Host "Done. Remove $tempDir if you don't need logs or temp clones."

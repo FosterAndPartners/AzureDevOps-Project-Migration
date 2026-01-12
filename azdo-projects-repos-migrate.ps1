@@ -6,9 +6,9 @@ $targetPAT = Read-Host -AsSecureString "Target PAT" | ConvertFrom-SecureString
 
 # Helper to convert secure string to plain (prompting once) - replace with plain text variables if you prefer
 function Get-Plain([string]$enc) {
-  $b = ConvertTo-SecureString $enc
-  $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($b)
-  try { [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr) } finally { [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr) }
+    $b = ConvertTo-SecureString $enc
+    $ptr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($b)
+    try { [System.Runtime.InteropServices.Marshal]::PtrToStringBSTR($ptr) } finally { [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($ptr) }
 }
 
 $sourcePAT = Get-Plain $sourcePAT
@@ -77,9 +77,9 @@ foreach ($p in $projects) {
         try {
             $check = Invoke-AzDo -Method Get -Org $targetOrg -UriPath "$projName/_apis/git/repositories/$repoName" -Body $null -Pat $targetPAT
             $targetRepoExists = $true
-            Write-Host "    Target repo exists."
+            Write-Host "Target repo exists."
         } catch {
-            Write-Host "    Creating target repo..."
+            Write-Host "Creating target repo..."
             $body = @{ name = $repoName }
             $created = Invoke-AzDo -Method Post -Org $targetOrg -UriPath "$projName/_apis/git/repositories" -Body $body -Pat $targetPAT
             $targetRepoExists = $true
@@ -92,16 +92,16 @@ foreach ($p in $projects) {
         $srcUrl = "https://user:$sourcePAT@dev.azure.com/$sourceOrg/$projName/_git/$repoName"
         $dstUrl = "https://user:$targetPAT@dev.azure.com/$targetOrg/$projName/_git/$repoName"
         
-        Write-Host "    Cloning --mirror..."
+        Write-Host "Cloning --mirror..."
         git clone --mirror $srcUrl $work
         if ($LASTEXITCODE -ne 0) { Write-Host "Clone failed for $repoName"; continue }
         
         Push-Location $work
-        Write-Host "    Pushing --mirror to target..."
+        Write-Host "Pushing --mirror to target..."
         git remote remove target 2>$null
         git remote add target $dstUrl
         git push --mirror target
-        if ($LASTEXITCODE -ne 0) { Write-Host "Push failed for $repoName" } else { Write-Host "    Migrated $repoName" }
+        if ($LASTEXITCODE -ne 0) { Write-Host "Push failed for $repoName" } else { Write-Host "Migrated $repoName" }
         Pop-Location
         
         # Optional: remove local mirror to save space
